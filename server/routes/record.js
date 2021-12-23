@@ -1,5 +1,5 @@
 const express = require('express');
-
+const path = require('path');
 // recordRoutes is an instance of the express router.
 // We use it to define our routes.
 // The router will be added as a middleware and will take control of requests starting with path /listings.
@@ -8,12 +8,31 @@ const recordRoutes = express.Router();
 // This will help us connect to the database
 const dbo = require('../db/conn');
 
-// This section will help you get a list of all the records.
-recordRoutes.route('/listings').get(async function (_req, res) {
+recordRoutes.route('/index.html').get(async function (_req, res) {
+  console.log(__dirname);
+  res.sendFile(path.join(__dirname, '/public/index.html'));
+});
+
+recordRoutes.route('/info.html').get(async function (_req, res) {
+  console.log(__dirname);
+  res.sendFile(path.join(__dirname, '/public/info.html'));
+});
+
+recordRoutes.route('/enemies.html').get(async function (_req, res) {
+  console.log(__dirname);
+  res.sendFile(path.join(__dirname, '/public/enemies.html'));
+});
+
+recordRoutes.route('/maps.html').get(async function (_req, res) {
+  console.log(__dirname);
+  res.sendFile(path.join(__dirname, '/public/maps.html'));
+});
+
+recordRoutes.route('/list').get(async function (_req, res) {
   const dbConnect = dbo.getDb();
 
   dbConnect
-    .collection('listingsAndReviews')
+    .collection('characters')
     .find({})
     .limit(50)
     .toArray(function (err, result) {
@@ -25,67 +44,27 @@ recordRoutes.route('/listings').get(async function (_req, res) {
     });
 });
 
-// This section will help you create a new record.
-recordRoutes.route('/listings/recordSwipe').post(function (req, res) {
+recordRoutes.route('/update').post(function (req, res) {
   const dbConnect = dbo.getDb();
-  const matchDocument = {
-    listing_id: req.body.id,
-    last_modified: new Date(),
-    session_id: req.body.session_id,
-    direction: req.body.direction,
-  };
-
   dbConnect
-    .collection('matches')
-    .insertOne(matchDocument, function (err, result) {
-      if (err) {
-        res.status(400).send('Error inserting matches!');
-      } else {
-        console.log(`Added a new match with id ${result.insertedId}`);
-        res.status(204).send();
-      }
-    });
+    .collection('characters')
+    .replaceOne({ _id: req.body._id }, req.body);
+  const updated = dbConnect
+    .collection('characters')
+    .findOne({ _id: req.body.id });
+  res.json(updated);
 });
 
-// This section will help you update a record by id.
-recordRoutes.route('/listings/updateLike').post(function (req, res) {
+recordRoutes.route('/create').put(function (req, res) {
   const dbConnect = dbo.getDb();
-  const listingQuery = { _id: req.body.id };
-  const updates = {
-    $inc: {
-      likes: 1,
-    },
-  };
-
   dbConnect
-    .collection('listingsAndReviews')
-    .updateOne(listingQuery, updates, function (err, _result) {
-      if (err) {
-        res
-          .status(400)
-          .send(`Error updating likes on listing with id ${listingQuery.id}!`);
-      } else {
-        console.log('1 document updated');
-      }
-    });
-});
-
-// This section will help you delete a record.
-recordRoutes.route('/listings/delete/:id').delete((req, res) => {
-  const dbConnect = dbo.getDb();
-  const listingQuery = { listing_id: req.body.id };
-
-  dbConnect
-    .collection('listingsAndReviews')
-    .deleteOne(listingQuery, function (err, _result) {
-      if (err) {
-        res
-          .status(400)
-          .send(`Error deleting listing with id ${listingQuery.listing_id}!`);
-      } else {
-        console.log('1 document deleted');
-      }
-    });
+    .collection('characters')
+    .insertOne(req.body)
+    .then((result) =>
+      console.log(`Successfully inserted item with _id: ${result.insertedId}`)
+    )
+    .catch((err) => console.error(`Failed to insert item: ${err}`));
+  res.send('200');
 });
 
 module.exports = recordRoutes;

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bootstrap Site</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+      integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+      integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+      integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="pills-info-tab"
+          data-bs-toggle="pill"
+          data-bs-target="#pills-info"
+          type="button"
+          role="tab"
+          aria-controls="pills-info"
+          aria-selected="true"
+        >
+          Info
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="pills-characters-tab"
+          data-bs-toggle="pill"
+          data-bs-target="#pills-characters"
+          type="button"
+          role="tab"
+          aria-controls="pills-characters"
+          aria-selected="false"
+        >
+          Characters
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="pills-enemies-tab"
+          data-bs-toggle="pill"
+          data-bs-target="#pills-enemies"
+          type="button"
+          role="tab"
+          aria-controls="pills-enemies"
+          aria-selected="false"
+        >
+          Enemies
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+      <div
+        class="tab-pane fade show active"
+        id="pills-info"
+        role="tabpanel"
+        aria-labelledby="pills-info-tab"
+      >
+        <div id="info">
+          <div id="characters-info" class="pl-2 pr-2 row"></div>
+          <div id="map" class="flex-row d-flex justify-content-evenly">
+            <div class="thumbnail p-2">
+              <h6>Main Floor</h6>
+              <img class="maps-thumbnail" src="maps/main.jpg" />
+            </div>
+            <div class="thumbnail p-2">
+              <h6>Court of the Count</h6>
+              <img class="maps-thumbnail" src="maps/court.jpg" />
+            </div>
+            <div class="thumbnail p-2">
+              <h6>Rooms of Weeping</h6>
+              <img class="maps-thumbnail" src="maps/rooms.jpg" />
+            </div>
+            <div class="thumbnail p-2">
+              <h6>Spires of Ravenloft</h6>
+              <img class="maps-thumbnail" src="maps/spires.jpg" />
+            </div>
+            <div class="thumbnail p-2">
+              <h6>Towers peaks and Spires</h6>
+              <img class="maps-thumbnail" src="maps/towers.jpg" />
+            </div>
+            <div class="thumbnail p-2">
+              <h6>Larders of Ill Omen</h6>
+              <img class="maps-thumbnail" src="maps/larders.jpg" />
+            </div>
+            <div class="thumbnail p-2">
+              <h6>Dungeon and Catacombs</h6>
+              <img class="maps-thumbnail" src="maps/catacombs.jpg" />
+            </div>
+          </div>
+          <div id="map-view" class="row">
+            <div class="col-10 offset-1">
+              <img id="map-info" class="img-fluid" src="maps/main.jpg" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="pills-characters"
+        role="tabpanel"
+        aria-labelledby="pills-characters-tab"
+      >
+        <div id="characters"></div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="pills-enemies"
+        role="tabpanel"
+        aria-labelledby="pills-enemies-tab"
+      >
+        <div class="grid">
+          <div id="enemies" class="row"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const checkbox = (body, field, value) => {
+        body.find('input#' + field).prop('checked', value);
+        readonly(body, field, value);
+      };
+      const editable = (body, field, value) => {
+        body.find('input#' + field).val(value);
+        readonly(body, field, value);
+      };
+      const readonly = (body, field, value) => {
+        body.find('span#' + field).text(value);
+      };
+      const readonlyCheckBox = (body, field, value) => {
+        body.find('span#' + field).text(value ? 'Inspiration' : '');
+      };
+      const enemy = (name) => {
+        const file = name.toLowerCase().replaceAll(' ', '-');
+        const template = $('#enemy').clone();
+        template.find('h5.name').text(name);
+        template.find('img.token').attr('src', 'tokens/' + file + '.png');
+        template.find('button').click((e) =>
+          $('#statModal')
+            .find('img.stat')
+            .attr('src', 'enemies/' + file + '.png')
+        );
+        template.removeClass('d-none');
+        $('#enemies').append(template);
+      };
+      const list = (body, selector, values, fields) => {
+        const container = body.find('#' + selector + 's');
+        values.forEach((v) => {
+          const template = $('.d-none.' + selector).clone();
+
+          fields.forEach((f) => {
+            template.find('span#' + f).text(v[f]);
+          });
+          template.removeClass('d-none');
+          container.append(template);
+        });
+      };
+
+      $('.thumbnail').on('click', function () {
+        $('img#map-info').attr('src', $(this).find('img').attr('src'));
+      });
+
+      const render = (character) => {
+        const template = $('.character.d-none').clone();
+        const body = template.find('.card-body');
+        const templateInfo = $('.character-info.d-none').clone();
+        const bodyInfo = templateInfo.find('.card-body');
+        // start info attributes
+        readonly(bodyInfo, 'name', character.name);
+        readonly(bodyInfo, 'ac', character.ac);
+
+        readonlyCheckBox(bodyInfo, 'inspiration', character.inspiration);
+        readonly(bodyInfo, 'hpmax', character.hp.max);
+        readonly(bodyInfo, 'hpcurrent', character.hp.current);
+        readonly(bodyInfo, 'hptempMax', character.hp.tempMax);
+        readonly(bodyInfo, 'hptempCurrent', character.hp.tempCurrent);
+        readonly(bodyInfo, 'deathSavessuccess', character.deathSaves.success);
+        readonly(bodyInfo, 'deathSavesfailures', character.deathSaves.failures);
+        readonly(bodyInfo, 'perception', character.perception);
+        list(bodyInfo, 'levelInfo', character.levels.slice(1), [
+          'level',
+          'slots',
+          'maxSlots',
+        ]);
+        // end info attributes
+        // start attributes
+        checkbox(body, 'inspiration', character.inspiration);
+        editable(body, 'standingOrders', character.standingOrders);
+        editable(body, 'hpmax', character.hp.max);
+        editable(body, 'hpcurrent', character.hp.current);
+        editable(body, 'hptempMax', character.hp.tempMax);
+        editable(body, 'hptempCurrent', character.hp.tempCurrent);
+        editable(body, 'deathSavessuccess', character.deathSaves.success);
+        editable(body, 'deathSavesfailures', character.deathSaves.failures);
+
+        readonly(body, 'name', character.name);
+        readonly(body, 'ac', character.ac);
+        readonly(body, 'race', character.race);
+        readonly(body, 'alignment', character.alignment);
+        readonly(body, 'initiative', character.initiative);
+        readonly(body, 'level', character.level);
+        readonly(body, 'globalDamageMod', character.globalDamageMod);
+        readonly(body, 'perception', character.perception);
+        readonly(body, 'class', character.class);
+        readonly(body, 'speed', character.speed);
+
+        list(body, 'attribute', character.attributes, [
+          'name',
+          'value',
+          'modifier',
+        ]);
+        list(body, 'savingThrow', character.savingThrows, [
+          'name',
+          'value',
+          'proficient',
+        ]);
+        list(body, 'skill', character.skills, ['name', 'value', 'proficient']);
+        list(body, 'trait', character.traits, ['name', 'description']);
+        list(body, 'resource', character.resources, ['name', 'value', 'max']);
+        list(body, 'level', character.levels, [
+          'level',
+          'slots',
+          'maxSlots',
+          'spells',
+        ]);
+        list(body, 'attack', character.attacks, ['name', 'atk', 'damage']);
+        // end attributes
+        template.removeClass('d-none');
+        $('#characters').append(template);
+        templateInfo.removeClass('d-none');
+        $('#characters-info').append(templateInfo);
+      };
+      $.getJSON('list', function (data, textStatus, jqXHR) {
+        data.forEach((d) => render(d));
+        [
+          'anastrasya',
+          'animated armor',
+          'animated halberd',
+          'banshee',
+          'barovian witch',
+          'beucephalus',
+          'black pudding',
+          'cyrus belview',
+          'emil toranescu',
+          'escher',
+          'flying sword',
+          'gargoyle',
+          'gertruda',
+          'ghoul',
+          'giant spider',
+          'giant wolf spider',
+          'gray ooze',
+          'guardian portrait',
+          'helga ruvak',
+          'hell hound',
+          'imp',
+          'invisible stalker',
+          'iron golem',
+          'lief lipsiege',
+          'ludmilla',
+          'patrina velikovna',
+          'pidlwick II',
+          'Rahadin',
+          'red dragon wyrmling',
+          'rug of smothering',
+          'sasha ivliskova',
+          'shadow demon',
+          'skeleton',
+          'specter',
+          'strahd von zarovich',
+          'strahd zombie',
+          'swarm of bats',
+          'swarm of rats',
+          'unseen servant',
+          'vampire spawn',
+          'volenta',
+          'werewolf',
+          'wight',
+          'wraith',
+          'zombie',
+        ].forEach((e) => enemy(e));
+      });
+    </script>
+    <div class="character-info d-none card col-4">
+      <div class="card-body">
+        <div>
+          <span id="name"></span> &nbsp;&nbsp;<span
+            id="inspiration"
+            class="badge bg-success"
+          ></span>
+        </div>
+        <div>
+          HP:&nbsp;<span id="hpmax"></span>&nbsp;/&nbsp;<span
+            id="hpcurrent"
+          ></span>
+          Temp:&nbsp;<span id="hptempMax"></span>&nbsp;/&nbsp;
+          <span id="hptempCurrent"></span>
+        </div>
+        <div>
+          <span class="badge rounded-pill text-dark border border-dark bg-light"
+            >Success:&nbsp;<span id="deathSavessuccess"></span></span
+          >&nbsp;<span class="badge rounded-pill bg-dark"
+            >Failures:&nbsp;<span id="deathSavesfailures"></span
+          ></span>
+        </div>
+        <div>
+          Ac:&nbsp;<span id="ac"></span> &nbsp;Perception:&nbsp;<span
+            id="perception"
+          ></span>
+        </div>
+
+        <div id="levelInfos" class="flex-row d-flex"></div>
+      </div>
+    </div>
+    <div class="character d-none card">
+      <div class="card-body">
+        <span id="name"></span>
+        <input name="standingOrders" id="standingOrders" />
+        <div class="hp">
+          <input type="number" name="hpmax" id="hpmax" />
+          <input type="number" name="hpcurrent" id="hpcurrent" />
+          <input type="number" name="hptempMax" id="hptempMax" />
+          <input type="number" name="hptempCurrent" id="hptempCurrent" />
+        </div>
+        <div id="deathSaves">
+          Success:<input
+            type="number"
+            name="deathSavessuccess"
+            id="deathSavessuccess"
+          />
+          Failures:<input
+            type="number"
+            name="deathSavesfailures"
+            id="deathSavesfailures"
+          />
+        </div>
+        <input id="inspiration" type="checkbox" />
+        <span id="hpmax"></span>
+        <span id="hpcurrent"></span>
+        <span id="hptempMax"></span>
+        <span id="hptempCurrent"></span>
+        <span id="deathSavessuccess"></span>
+        <span id="deathSavesfailures"></span>
+        <span id="inspiration"></span>
+        <div>Initiative: <span id="initiative"></span></div>
+        <div>Global Damage Modifier: <span id="globalDamageMod"></span></div>
+        <div>Ac: <span id="ac"></span></div>
+        <div>Race: <span id="race"></span></div>
+        <div>Alignment: <span id="alignment"></span></div>
+        <span id="level"></span>
+        <span id="perception"></span>
+        <span id="proficiency"></span>
+        <div>Class: <span id="class"></span></div>
+        <div>Speed: <span id="speed"></span></div>
+        <div id="attributes"></div>
+        <div id="savingThrows"></div>
+        <div id="skills"></div>
+        <div id="attacks"></div>
+        <div id="traits"></div>
+        <div id="resources"></div>
+        <div id="levels"></div>
+      </div>
+    </div>
+    <div class="character d-none"></div>
+    <div class="attribute d-none">
+      <span id="name"></span><span id="value"></span><span id="modifier"></span>
+    </div>
+    <div class="savingThrow d-none">
+      <span id="name"></span><span id="value"></span
+      ><span id="proficient"></span>
+    </div>
+    <div class="skill d-none">
+      <span id="name"></span><span id="value"></span
+      ><span id="proficient"></span>
+    </div>
+    <div class="trait d-none">
+      <span id="name"></span><span id="description"></span>
+    </div>
+    <div class="resource d-none">
+      <span id="name"></span><span id="value"></span><span id="max"></span>
+    </div>
+    <div class="attack d-none">
+      <span id="name"></span><span id="atk"></span><span id="damage"></span>
+    </div>
+    <div class="level d-none">
+      <span id="level"></span><span id="slots"></span
+      ><span id="maxSlots"> </span>
+      <span id="spells"></span>
+    </div>
+    <div class="levelInfo border border-dark rounded mr-1 d-flex d-none">
+      &nbsp;<span id="level"></span>&nbsp;|&nbsp;<span id="slots"></span
+      >&nbsp;/&nbsp;<span id="maxSlots"> </span>&nbsp;
+    </div>
+    <div id="enemy" class="d-none card col-2">
+      <div class="col-12"><h5 class="card-title name"></h5></div>
+      <div class="col-12"><img src="..." class="card-img-top token" /></div>
+      <div class="col-12">
+        <button
+          type="button"
+          class="btn btn-light"
+          data-bs-toggle="modal"
+          data-bs-target="#statModal"
+        >
+          Stat Block
+        </button>
+      </div>
+    </div>
+  </body>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="statModal"
+    tabindex="-1"
+    aria-labelledby="statModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <img src="..." class="stat img-fluid" />
+        </div>
+      </div>
+    </div>
+  </div>
+</html>
